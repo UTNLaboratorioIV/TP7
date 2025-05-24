@@ -1,5 +1,9 @@
 package negocio;
 
-public interface TipoSeguroNegocio {
+import entidad.TipoSeguro;
 
+public interface TipoSeguroNegocio {
+	
+	public boolean insert(TipoSeguro t);
+	
 }
