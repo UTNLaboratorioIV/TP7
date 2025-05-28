@@ -6,9 +6,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import dao.SeguroDao;
+
 import entidad.Seguro;
+import entidad.TipoSeguro;
 
 public class SeguroDaoImpl implements SeguroDao{
 
@@ -55,7 +59,6 @@ public class SeguroDaoImpl implements SeguroDao{
 		
 		return isInsertExitoso;
 	}
-
 	
 	@Override
 	public int obtenerProximoId() {
@@ -77,9 +80,84 @@ public class SeguroDaoImpl implements SeguroDao{
 
 	    return proximoId;  
 	}
+		
+	public ArrayList<Seguro> obtenerSeguros() {
+	    try {
+	        Class.forName("com.mysql.jdbc.Driver");
+	    } catch (ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+
+	    ArrayList<Seguro> lSeguros = new ArrayList<Seguro>();
+	    Connection cn = null;
+
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+
+	        String query = "SELECT s.idSeguro, s.descripcion, s.idTipo, t.descripcion AS descripcionTipo, s.costoContratacion, s.costoAsegurado " +
+	                       "FROM segurosgroup.seguros s " +
+	                       "JOIN segurosgroup.tiposeguros t ON s.idTipo = t.idTipo";
+
+	        Statement st = cn.createStatement();
+	        ResultSet rs = st.executeQuery(query);
+
+	        while (rs.next()) {
+	            Seguro s = new Seguro();
+	            s.setId(rs.getInt("idSeguro"));
+	            s.setDescripcion(rs.getString("descripcion"));
+
+	            TipoSeguro tipoSeg = new TipoSeguro();
+	            tipoSeg.setId(rs.getInt("idTipo"));
+	            tipoSeg.setDescripcion(rs.getString("descripcionTipo"));
+	            s.setTipoSeguro(tipoSeg);
+
+	            s.setCostoContratacion(rs.getFloat("costoContratacion"));
+	            s.setCostoAsegurado(rs.getFloat("costoAsegurado"));
+
+	            lSeguros.add(s);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return lSeguros;
+	}
 	
-	
-	
-	
+	public ArrayList<Seguro> obtenerSegurosPorTipo(int idTipo) {
+	    ArrayList<Seguro> lista = new ArrayList<>();
+	    Connection cn = null;
+
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = "SELECT s.idSeguro, s.descripcion, s.costoContratacion, s.costoAsegurado, " +
+	                       "ts.idTipo, ts.descripcion AS descripcionTipo " +
+	                       "FROM segurosgroup.seguros s " +
+	                       "JOIN segurosgroup.tiposeguros ts ON s.idTipo = ts.idTipo " +
+	                       "WHERE s.idTipo = ?";
+	        PreparedStatement pst = cn.prepareStatement(query);
+	        pst.setInt(1, idTipo);
+	        ResultSet rs = pst.executeQuery();
+
+	        while (rs.next()) {
+	            Seguro s = new Seguro();
+	            s.setId(rs.getInt("idSeguro"));
+	            s.setDescripcion(rs.getString("descripcion"));
+	            s.setCostoContratacion(rs.getFloat("costoContratacion"));
+	            s.setCostoAsegurado(rs.getFloat("costoAsegurado"));
+
+	            TipoSeguro tipo = new TipoSeguro();
+	            tipo.setId(rs.getInt("idTipo"));
+	            tipo.setDescripcion(rs.getString("descripcionTipo"));
+
+	            s.setTipoSeguro(tipo);
+	            lista.add(s);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return lista;
+	}
 	
 }

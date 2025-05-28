@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Statement;
 
 import dao.TipoSeguroDao;
 import entidad.TipoSeguro;
@@ -14,12 +15,9 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 
 	private static String insert = "Insert into tipoSeguros (idTipo, descripcion) VALUES  (?, ?)";
 	
-	
 	public TipoSeguroDaoImpl()
-	{
-		
+	{	
 	}
-	
 	
 	public boolean insert(TipoSeguro t)
 	{
@@ -59,9 +57,8 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 		return insertResult;
 	}
 
-
 	@Override
-	public List<TipoSeguro> listarTiposSeguro() {
+  public List<TipoSeguro> listarTiposSeguro() {
 		List<TipoSeguro> lista = new ArrayList<>();
         String sql = "SELECT idTipo, descripcion FROM tiposeguros";
         Connection con = Conexion.getConexion().getSQLConexion();
@@ -69,7 +66,27 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
         try (
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+             while (rs.next()) {
+                TipoSeguro tipo = new TipoSeguro();
+                tipo.setId(rs.getInt("idTipo"));
+                tipo.setDescripcion(rs.getString("descripcion"));
+                lista.add(tipo);
+            }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+	
+    public ArrayList<TipoSeguro> obtenerTodos() {
+        ArrayList<TipoSeguro> lista = new ArrayList<>();
+        Connection cn = null;
+
+        try {
+            cn = Conexion.getConexion().getSQLConexion();
+            String query = "SELECT idTipo, descripcion FROM segurosgroup.tiposeguros";
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 TipoSeguro tipo = new TipoSeguro();
                 tipo.setId(rs.getInt("idTipo"));
@@ -83,5 +100,4 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 
         return lista;
     }
-	
 }
