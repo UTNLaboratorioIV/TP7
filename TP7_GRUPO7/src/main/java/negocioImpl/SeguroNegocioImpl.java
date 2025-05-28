@@ -2,6 +2,7 @@ package negocioImpl;
 
 import dao.SeguroDao;
 import daoImpl.SeguroDaoImpl;
+
 import entidad.Seguro;
 import negocio.SeguroNegocio;
 
@@ -20,5 +21,10 @@ public class SeguroNegocioImpl implements SeguroNegocio{
 		}
 		return estado;
 	}
+	public int obtenerProximoIdSeguro() {
+	    SeguroDao seguroDao = new SeguroDaoImpl();
+	    return seguroDao.obtenerProximoId();
+	}
+
 	
 }

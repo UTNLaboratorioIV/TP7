@@ -6,4 +6,5 @@ public interface SeguroNegocio {
 
 	public boolean insert(Seguro seguro);
 	
+	
 }

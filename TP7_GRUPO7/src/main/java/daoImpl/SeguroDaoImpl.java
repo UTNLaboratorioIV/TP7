@@ -1,5 +1,7 @@
 package daoImpl;
 
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,6 +58,27 @@ public class SeguroDaoImpl implements SeguroDao{
 		}
 		
 		return isInsertExitoso;
+	}
+	
+	@Override
+	public int obtenerProximoId() {
+		int proximoId = 1;  //  id por defecto
+	    String sqlConsulta = "SELECT COALESCE(MAX(idSeguro), 0) + 1 AS proximo_id FROM seguros";
+
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+
+	    try (PreparedStatement ps = conexion.prepareStatement(sqlConsulta);
+	         ResultSet rs = ps.executeQuery()) {
+
+	        if (rs.next()) {
+	            proximoId = rs.getInt("proximo_id");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return proximoId;  
 	}
 		
 	public ArrayList<Seguro> obtenerSeguros() {

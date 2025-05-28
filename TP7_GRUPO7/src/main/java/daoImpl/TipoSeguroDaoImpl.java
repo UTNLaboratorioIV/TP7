@@ -3,7 +3,9 @@ package daoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.sql.Statement;
 
 import dao.TipoSeguroDao;
@@ -26,6 +28,7 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 		
 		try {
 			statement = cn.prepareStatement(insert);
+			
 			statement.setInt(1, t.getId());
 			statement.setString(2, t.getDescripcion());
 			
@@ -53,6 +56,27 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 		
 		return insertResult;
 	}
+
+	@Override
+  public List<TipoSeguro> listarTiposSeguro() {
+		List<TipoSeguro> lista = new ArrayList<>();
+        String sql = "SELECT idTipo, descripcion FROM tiposeguros";
+        Connection con = Conexion.getConexion().getSQLConexion();
+
+        try (
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+             while (rs.next()) {
+                TipoSeguro tipo = new TipoSeguro();
+                tipo.setId(rs.getInt("idTipo"));
+                tipo.setDescripcion(rs.getString("descripcion"));
+                lista.add(tipo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 	
     public ArrayList<TipoSeguro> obtenerTodos() {
         ArrayList<TipoSeguro> lista = new ArrayList<>();
@@ -63,7 +87,6 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
             String query = "SELECT idTipo, descripcion FROM segurosgroup.tiposeguros";
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(query);
-
             while (rs.next()) {
                 TipoSeguro tipo = new TipoSeguro();
                 tipo.setId(rs.getInt("idTipo"));
@@ -77,6 +100,4 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 
         return lista;
     }
-	
-
 }
