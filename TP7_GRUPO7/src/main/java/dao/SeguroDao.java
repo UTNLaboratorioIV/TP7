@@ -14,10 +14,7 @@ public interface SeguroDao {
 	public boolean insert(Seguro seguro);
 
 	public ArrayList<Seguro> obtenerSeguros();
-
 	
-
-	
-	
+	public ArrayList<Seguro> obtenerSegurosPorTipo(int idTipo);
 
 }

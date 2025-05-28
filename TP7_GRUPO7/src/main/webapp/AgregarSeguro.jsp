@@ -17,7 +17,7 @@
 		<div>
 			<a href="Inicio.jsp" style="margin-right: 10px;"> Inicio</a>
 			<a href="AgregarSeguro.jsp" style="margin-right: 10px;"> Agregar Seguro</a>
-			<a href="#">Listar Seguros</a>
+			<a href="ListarSeguros.jsp">Listar Seguros</a>
 		</div>
 	</header>
 

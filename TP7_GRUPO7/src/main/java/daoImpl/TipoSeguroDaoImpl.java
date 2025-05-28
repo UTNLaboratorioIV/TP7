@@ -2,6 +2,9 @@ package daoImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.sql.Statement;
 
 import dao.TipoSeguroDao;
 import entidad.TipoSeguro;
@@ -10,12 +13,9 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 
 	private static String insert = "Insert into tipoSeguros (idTipo, descripcion) VALUES  (?, ?)";
 	
-	
 	public TipoSeguroDaoImpl()
-	{
-		
+	{	
 	}
-	
 	
 	public boolean insert(TipoSeguro t)
 	{
@@ -53,4 +53,30 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 		
 		return insertResult;
 	}
+	
+    public ArrayList<TipoSeguro> obtenerTodos() {
+        ArrayList<TipoSeguro> lista = new ArrayList<>();
+        Connection cn = null;
+
+        try {
+            cn = Conexion.getConexion().getSQLConexion();
+            String query = "SELECT idTipo, descripcion FROM segurosgroup.tiposeguros";
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                TipoSeguro tipo = new TipoSeguro();
+                tipo.setId(rs.getInt("idTipo"));
+                tipo.setDescripcion(rs.getString("descripcion"));
+                lista.add(tipo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+	
+
 }

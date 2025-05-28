@@ -1,9 +1,6 @@
 <%@page import="entidad.Seguro" %>
-<%@page import="dao.SeguroDao" %>
+<%@page import="entidad.TipoSeguro" %>
 <%@page import="java.util.ArrayList" %>
-
-
-
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -11,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Listado de Seguros</title>
 </head>
 <body>
 
@@ -23,50 +20,65 @@
 		</div>
 	</header>
 	
-	<b></b><h3>"Tipo de seguros de la base de datos"</h3></b>
+	<h3>Tipo de seguros de la base de datos</h3>
+	
+	<%
+		// Prevenir errores por atributos nulos
+		Integer tipoSel = (Integer) request.getAttribute("tipoSeguroSeleccionado");
+		if (tipoSel == null) tipoSel = 0;
+		ArrayList<TipoSeguro> listaTipos = (ArrayList<TipoSeguro>) request.getAttribute("listaTipos");
+	%>
+	
 	<form method="get" action="servletSeguro">
-	Búsqueda por tipo de Seguros: <select name="tipoSeguro">
-			<option value="1">Todos los seguros</option>
-			<option value="2">Seguro de casas</option>
-			<option value="3">Seguro de vida</option>
-			<option value="4">Seguro de motos</option>
-			</select> <input type="submit" name="btnFiltrar" value="Filtrar" style="height: 30px; text-align: center">
-			<input type="hidden" name="Param" value="1">
-			<br>
-			<br>
-		</form>	
+	    Búsqueda por tipo de Seguros: 
+	    <select name="tipoSeguro">
+	        <option value="0" <%= (tipoSel == 0) ? "selected" : "" %>>Todos los seguros</option>
+	        <%
+	        	if (listaTipos != null) {
+		            for (TipoSeguro tipo : listaTipos) {
+	        %>
+	            <option value="<%= tipo.getId() %>" <%= (tipo.getId() == tipoSel) ? "selected" : "" %>>
+	                <%= tipo.getDescripcion() %>
+	            </option>
+	        <%
+		            }
+		        }
+	        %>
+	    </select> 
+	    <input type="submit" name="btnFiltrar" value="Filtrar" style="height: 30px; text-align: center">
+	    <input type="hidden" name="Param" value="1">
+	    <br><br>
+	</form>
 			
-<%
-ArrayList<Seguro> listaSeguros = null;
+	<%
+		ArrayList<Seguro> listaSeguros = (ArrayList<Seguro>) request.getAttribute("listaS");
+	%>
 
-if(request.getAttribute("listaS")!= null)
-{
+	<table border="double black">
+	<tr>
+		<th>ID seguro</th>
+		<th>Descripción seguro</th>
+		<th>Descripción tipo seguro</th>
+		<th>Costo contratación</th>
+		<th>Costo máximo asegurado</th>
+	</tr>
 	
-	listaSeguros = (ArrayList<Seguro>)request.getAttribute("listaS");
-}
-%>
-
-<table border="double black">
-<tr><th>ID seguro</th>   <th>Descripción seguro</th>    <th>Descripción tipo seguro</th> <th>Costo contratación</th> <th>Costo máximo asegurado</th></tr>
-
-<% 
-if(listaSeguros!= null)
-for(Seguro seg : listaSeguros)
-	{
-	
- %>
-<tr> <td><%= seg.getId() %></td>   <td><%=seg.getDescripcion() %></td>  <td><%= seg.getTipoSeguro() %></td> <td><%= seg.getCostoContratacion() %></td>  <td><%= seg.getCostoAsegurado() %></td></tr>
-
-<% } %>
-
-</table>
-	
-	
-
-
-
-
-
+	<% 
+		if(listaSeguros != null) {
+			for(Seguro seg : listaSeguros) {
+	%>
+	<tr>
+		<td><%= seg.getId() %></td>
+		<td><%= seg.getDescripcion() %></td>
+		<td><%= seg.getTipoSeguro().getDescripcion() %></td>
+		<td><%= seg.getCostoContratacion() %></td>
+		<td><%= seg.getCostoAsegurado() %></td>
+	</tr>
+	<%
+			}
+		}
+	%>
+	</table>
 
 </body>
 </html>
