@@ -1,14 +1,23 @@
 package daoImpl;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import dao.SeguroDao;
+
 import entidad.Seguro;
+import entidad.TipoSeguro;
 
 public class SeguroDaoImpl implements SeguroDao{
 
+	
+	
+	
 	private static final String insert = "INSERT INTO seguros (descripcion,idTipo,costoContratacion,"
 			+ "costoAsegurado) VALUES(?, ?, ?, ?)";
 	
@@ -51,6 +60,47 @@ public class SeguroDaoImpl implements SeguroDao{
 		}
 		
 		return isInsertExitoso;
+	}
+	
+	
+public ArrayList<Seguro> obtenerSeguros(){
+	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		
+	
+		ArrayList<Seguro> lSeguros = new ArrayList<Seguro>();
+		Connection cn = null;
+		
+		try
+		{	
+			cn = Conexion.getConexion().getSQLConexion();
+
+		 String query = "SELECT * FROM segurosgroup.seguros";
+		 Statement st = cn.createStatement();
+		 ResultSet rs = st.executeQuery(query);
+		 while(rs.next()) 
+		 {
+			 Seguro s = new Seguro();
+			 s.setId(rs.getInt("id"));
+			 s.setDescripcion(rs.getString("descripcion"));
+			 TipoSeguro tipo = new TipoSeguro();
+			 tipo.setId(rs.getInt("tipoSeguro")); 
+			 s.setTipoSeguro(tipo);
+			 s.setCostoContratacion(rs.getFloat("costoContratacion"));
+			 s.setCostoAsegurado(rs.getFloat("costoAsegurado"));
+			 lSeguros.add(s);
+			 
+		 }
+	    }
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return lSeguros;
 	}
 	
 }
