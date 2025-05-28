@@ -6,4 +6,6 @@ public interface SeguroDao {
 	
 	public boolean insert(Seguro seguro);
 
+	int obtenerProximoId();
+
 }

@@ -1,6 +1,11 @@
 <%@ page import="entidad.Seguro" %>
 <%@ page import="entidad.TipoSeguro" %>
 <%@ page import="daoImpl.SeguroDaoImpl" %>
+<%@ page import="dao.SeguroDao" %>
+<%@ page import="dao.TipoSeguroDao" %>
+<%@ page import="daoImpl.TipoSeguroDaoImpl" %>
+<%@ page import="java.util.List" %>
+
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -23,11 +28,20 @@
 
 <h2>Agregar Seguros</h2>
 
+<%SeguroDaoImpl segDaoImpl1 = new SeguroDaoImpl();
+int proximoId = segDaoImpl1.obtenerProximoId();
+
+
+TipoSeguroDao tipoDao = new TipoSeguroDaoImpl();
+List<TipoSeguro> listaTipos = tipoDao.listarTiposSeguro();
+
+%>
+
 <form method="get" action="AgregarSeguro.jsp" style="font-family: Arial;">
   <table style="border-collapse: separate; border-spacing: 10px;">
     <tr>
-      <td style="text-align: left;"><label for="txtId">ID Seguro:</label></td>
-      <td><input type="text" name="txtId" id="txtId" style="width: 200px;"></td>
+      <td style="text-align: left;"><label for="txtId" >ID Seguro:</label></td>
+      <td><input type="text" name="txtId" id="txtId" style="width: 200px;" value="<%= proximoId %>" readonly></td>
     </tr>
     <tr>
       <td style="text-align: left;"><label for="txtDescripcion">Descripción:</label></td>
@@ -37,9 +51,10 @@
       <td style="text-align: left;"><label for="cbTipoSeguro">Tipo de Seguro:</label></td>
       <td>
         <select name="cbTipoSeguro" id="cbTipoSeguro" style="width: 204px;">
-          
-
-        </select>
+    <% for(TipoSeguro tipo : listaTipos) { %>
+        <option value="<%= tipo.getId() %>"><%= tipo.getDescripcion() %></option>
+    <% } %>
+</select>
       </td>
     </tr>
     <tr>
@@ -59,6 +74,10 @@
 </form>
 
 <%
+
+
+
+
 	boolean filas = false;
 	if(request.getParameter("btnAceptar")!=null)
 	{
