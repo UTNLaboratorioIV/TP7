@@ -3,7 +3,6 @@ package daoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
@@ -58,7 +57,7 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
 	}
 
 	@Override
-  public List<TipoSeguro> listarTiposSeguro() {
+	public List<TipoSeguro> listarTiposSeguro() {
 		List<TipoSeguro> lista = new ArrayList<>();
         String sql = "SELECT idTipo, descripcion FROM tiposeguros";
         Connection con = Conexion.getConexion().getSQLConexion();
@@ -66,7 +65,8 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
         try (
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-             while (rs.next()) {
+
+            while (rs.next()) {
                 TipoSeguro tipo = new TipoSeguro();
                 tipo.setId(rs.getInt("idTipo"));
                 tipo.setDescripcion(rs.getString("descripcion"));
@@ -76,6 +76,10 @@ public class TipoSeguroDaoImpl implements TipoSeguroDao{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return lista;
+    }
+
 
 	
     public ArrayList<TipoSeguro> obtenerTodos() {

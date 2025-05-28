@@ -16,6 +16,7 @@
 		</div>
 	</header>
 	
+	<h2>Soy la página inicio</h2>
 
 </body>
 </html>
