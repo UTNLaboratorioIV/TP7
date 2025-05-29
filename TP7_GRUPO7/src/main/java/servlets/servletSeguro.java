@@ -17,19 +17,14 @@ import dao.TipoSeguroDao;
 import daoImpl.SeguroDaoImpl;
 import daoImpl.TipoSeguroDaoImpl;
 
-@WebServlet("/servletSeguro")//NOMBRE PARA SER LOCALIZADO
+@WebServlet("/servletSeguro")
 public class servletSeguro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public servletSeguro() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	//DOS METODOS DOGET Y DOPOST
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         String param = request.getParameter("Param");
@@ -68,6 +63,46 @@ public class servletSeguro extends HttpServlet {
     }
 		
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	}
+		
+		Seguro seguro = new Seguro();
 
+		try {
+			SeguroDaoImpl segDaoImpl = new SeguroDaoImpl();
+			int proximoId = segDaoImpl.obtenerProximoId();
+			seguro.setId(proximoId);
+			
+			seguro.setDescripcion(request.getParameter("txtDescripcion"));
+			
+		    float costoContratacion = Float.parseFloat(request.getParameter("txtCostoContrato"));
+		    float costoAsegurado = Float.parseFloat(request.getParameter("txtCostoMaxAsegurado"));
+
+		    if (costoContratacion <= 0 || costoAsegurado <= 0) {
+		        request.setAttribute("mensaje", "Los valores deben ser mayores a cero.");
+		        request.getRequestDispatcher("AgregarSeguro.jsp").forward(request, response);
+		        return;
+		    }
+
+		    seguro.setCostoContratacion(costoContratacion);
+		    seguro.setCostoAsegurado(costoAsegurado);
+			
+			int idTipoSeguro = Integer.parseInt(request.getParameter("cbTipoSeguro"));
+			TipoSeguro tipo = new TipoSeguro();
+			tipo.setId(idTipoSeguro);
+			seguro.setTipoSeguro(tipo);
+
+			boolean insertado = segDaoImpl.insert(seguro);
+
+			if (insertado) {
+				request.setAttribute("mensaje", "Seguro agregado con éxito");
+			} else {
+				request.setAttribute("mensaje", "No se pudo agregar el seguro");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("mensaje", "Error al procesar los datos: " + e.getMessage());
+		}
+
+		request.getRequestDispatcher("AgregarSeguro.jsp").forward(request, response);
+	}
 }
