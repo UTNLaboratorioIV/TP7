@@ -34,10 +34,9 @@ public class SeguroDaoImpl implements SeguroDao{
 		{
 			statement = conexion.prepareStatement(insert);
 			statement.setString(1, seguro.getDescripcion());
-			/*if (seguro.getTipoSeguro() != null && seguro.getTipoSeguro().getId() > 0) {
+			if (seguro.getTipoSeguro() != null && seguro.getTipoSeguro().getId() > 0) {
 				statement.setInt(2, seguro.getTipoSeguro().getId());
-			}*/
-			statement.setInt(2, 1); // Testeo sin desarrollar clase TipoSeguro
+			}
 			statement.setFloat(3, seguro.getCostoContratacion());
 			statement.setFloat(4, seguro.getCostoAsegurado());
 			
